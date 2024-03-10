@@ -1,10 +1,10 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from './SinglePostPage.module.css';
-import { Post, ComponentProps } from "../Interface";
+import { Post, SinglePostProps } from "../Interface";
 import { fetchDataPostId } from "../http";
 
-const SinglePostPage: FunctionComponent<ComponentProps> = ({ setIsActive, isActive }) => {
+const SinglePostPage: FunctionComponent<SinglePostProps> = ({ setIsActive, isActive }) => {
 
     const initialPosts: Post = {
         userId: 1,
@@ -18,15 +18,14 @@ const SinglePostPage: FunctionComponent<ComponentProps> = ({ setIsActive, isActi
     const closeModal = (): void => {
         setIsActive(false);
         navigate('/');
-    }
-
+    };
     useEffect(() => {
-        fetchDataPostId(id)
+        fetchDataPostId(id === 'newspaper'?'/':id)
             .then((data) => setPost(data))
             .catch(error => {
                 console.error('Произошла ошибка:', error);
             });
-    }, [id])
+    }, [id]);
 
     return (
         <div onClick={() => closeModal()} className={isActive ? styles.postModalActive : styles.postModalUnActive}>

@@ -5,7 +5,10 @@ export interface Post {
     body: string;
 }
 
-export interface ComponentProps {
+export interface SinglePostProps {
     setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
     isActive: boolean;
+}
+export interface PostPageProps {
+    setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }

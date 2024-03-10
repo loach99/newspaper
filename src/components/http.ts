@@ -3,9 +3,9 @@ type FetchError = {
     message: string;
     code?: number;
 };
-export const fetchData = ():Promise<Post[]> => {
+export const fetchData = (currentPage:number,setFetching:React.Dispatch<React.SetStateAction<boolean>>):Promise<Post[]> => {
     return new Promise((resolve, reject) => {
-        fetch('https://jsonplaceholder.typicode.com/posts?_limit=10')
+        fetch(`https://jsonplaceholder.typicode.com/posts?_limit=10&_page=${currentPage}`)
             .then(response => {
                 if (!response.ok) {
                     reject("Ошибка при получении данных");
@@ -15,6 +15,7 @@ export const fetchData = ():Promise<Post[]> => {
             .then((data:Post[]) => {
                 resolve(data);
             })
+            .finally(()=>setFetching(false))
             .catch((error:FetchError) => {
                 reject(error);
             });

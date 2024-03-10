@@ -3,11 +3,9 @@ import styles from './PostsPage.module.css'
 import { Link, Outlet } from "react-router-dom";
 import { Post } from "../Interface";
 import { fetchData } from "../http";
+import {PostPageProps} from '../Interface'
 
-interface ComponentProps {
-    setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
-}
-const PostPage: FunctionComponent<ComponentProps> = ({ setIsActive }) => {
+const PostPage: FunctionComponent<PostPageProps> = ({ setIsActive }) => {
 
     const initialPosts: Post[] = [
         {
@@ -19,20 +17,39 @@ const PostPage: FunctionComponent<ComponentProps> = ({ setIsActive }) => {
 
     ];
     const [posts, setPosts] = useState<Post[]>(initialPosts);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [fetching, setFetching] = useState<boolean>(true);
 
     useEffect(() => {
-        fetchData()
-            .then((data) => setPosts(data))
-            .catch(error => {
-                console.error('Произошла ошибка:', error);
-            });
+        if (fetching) {
+            fetchData(currentPage, setFetching)
+                .then((data) => {
+                    setPosts([...posts, ...data]);
+                    setCurrentPage(prevState => prevState + 1)
+                })
+                .catch(error => {
+                    console.error('Произошла ошибка:', error);
+                });
+        }
+    }, [fetching])
+
+    useEffect(() => {
+        document.addEventListener('scroll', scrollHandler);
+        return function () {
+            document.removeEventListener('scroll', scrollHandler)
+        }
     }, [])
+    const scrollHandler = (e:Event): void => {
+        if ((e.target as Document).documentElement.scrollHeight - ((e.target as Document).documentElement.scrollTop + window.innerHeight) < 100) {
+            setFetching(true)
+        }  
+    }
     return (
         <div className={styles.postWrap}>
             <Outlet />
             <div className={styles.container}>
                 {posts.length != 1 ? (<>
-                    {posts.map((post: Post) => {
+                    {posts.slice(1).map((post: Post) => {
                         return (
                             <div className={styles.postContainer} key={post.id}>
                                 <div className={styles.postHeader}>
@@ -52,10 +69,8 @@ const PostPage: FunctionComponent<ComponentProps> = ({ setIsActive }) => {
                             </div>
                         )
                     })}</>) : (<p className={styles.loader}>Loading...</p>)}
-
             </div>
         </div>
-
     );
 }
 
