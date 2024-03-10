@@ -1,0 +1,77 @@
+.postModalActive {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    transition: 0.3s;
+    opacity: 1;
+    visibility: visible;
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+}
+
+.postModalUnActive {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    transition: 0.3s;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.postContainer {
+    border-radius: 15px;
+    background-color: #fff;
+    width: 650px;
+}
+
+.postHeader {
+    padding: 1rem;
+    border-bottom: 1px solid rgb(209, 209, 209);
+    display: flex;
+    align-items: center;
+}
+
+.postHeaderInfo {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.postHeaderInfoName {
+    font-size: 1.3rem;
+}
+
+.postHeaderInfoTime {
+    font-size: 1.1rem;
+    color: rgb(166, 166, 166);
+}
+
+.postHeaderInfoTime:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.postHeaderInfoName:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.avatarPost {
+    border-radius: 50%;
+    border: 1px solid rgb(209, 209, 209);
+    width: 80px;
+    height: 80px;
+    background-color: rgb(238, 238, 238);
+}
+.postTitle{
+    font-size: 1.6rem;
+}
+.postContent{
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
