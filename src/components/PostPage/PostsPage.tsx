@@ -2,6 +2,8 @@ import { FunctionComponent, useEffect, useState } from "react"
 import styles from './PostsPage.module.css'
 import { Link, Outlet } from "react-router-dom";
 import { Post } from "../Interface";
+import { fetchData } from "../http";
+
 interface ComponentProps {
     setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -17,37 +19,40 @@ const PostPage: FunctionComponent<ComponentProps> = ({ setIsActive }) => {
 
     ];
     const [posts, setPosts] = useState<Post[]>(initialPosts);
+
     useEffect(() => {
-        fetch('https://jsonplaceholder.typicode.com/posts?_limit=10')
-            .then(response => response.json())
-            .then(data => setPosts(data))
+        fetchData()
+            .then((data) => setPosts(data))
+            .catch(error => {
+                console.error('Произошла ошибка:', error);
+            });
     }, [])
     return (
         <div className={styles.postWrap}>
             <Outlet />
             <div className={styles.container}>
-                {posts.map((post: Post) => {
-                    return (
-                        <div className={styles.postContainer} key={post.id}>
-                            <div className={styles.postHeader}>
-                                <a href="">
-                                    <div className={styles.avatarPost}>
+                {posts.length != 1 ? (<>
+                    {posts.map((post: Post) => {
+                        return (
+                            <div className={styles.postContainer} key={post.id}>
+                                <div className={styles.postHeader}>
+                                    <a href="">
+                                        <div className={styles.avatarPost}>
+                                        </div>
+                                    </a>
+                                    <div className={styles.postHeaderInfo}>
+                                        <div className={styles.postHeaderInfoName}>Name Surname</div>
+                                        <div className={styles.postHeaderInfoTime}>16:33</div>
                                     </div>
-                                </a>
-                                <div className={styles.postHeaderInfo}>
-                                    <div className={styles.postHeaderInfoName}>Name Surname</div>
-                                    <div className={styles.postHeaderInfoTime}>16:33</div>
+                                </div>
+                                <div className={styles.postContent}>
+                                    <div className={styles.postTitle}>{post.title}</div>
+                                    <Link to={`/${post.id}`} onClick={() => setIsActive(true)} className={styles.showAllPost}>show more</Link>
                                 </div>
                             </div>
-                            <div className={styles.postContent}>
-                                <div className={styles.postTitle}>{post.title}</div>
-                                <Link to={`/${post.id}`} onClick={() => setIsActive(true)} className={styles.showAllPost}>show more</Link>
-                            </div>
+                        )
+                    })}</>) : (<p className={styles.loader}>Loading...</p>)}
 
-                        </div>
-
-                    )
-                })}
             </div>
         </div>
 

@@ -2,6 +2,7 @@ import { FunctionComponent, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from './SinglePostPage.module.css';
 import { Post, ComponentProps } from "../Interface";
+import { fetchDataPostId } from "../http";
 
 const SinglePostPage: FunctionComponent<ComponentProps> = ({ setIsActive, isActive }) => {
 
@@ -14,14 +15,17 @@ const SinglePostPage: FunctionComponent<ComponentProps> = ({ setIsActive, isActi
     const { id } = useParams<string>();
     const [post, setPost] = useState<Post>(initialPosts);
     const navigate = useNavigate();
-    const closeModal = ():void => {
+    const closeModal = (): void => {
         setIsActive(false);
         navigate('/');
     }
+
     useEffect(() => {
-        fetch(`https://jsonplaceholder.typicode.com/posts/${id}`)
-            .then(response => response.json())
-            .then(data => setPost(data))
+        fetchDataPostId(id)
+            .then((data) => setPost(data))
+            .catch(error => {
+                console.error('Произошла ошибка:', error);
+            });
     }, [id])
 
     return (
@@ -37,10 +41,11 @@ const SinglePostPage: FunctionComponent<ComponentProps> = ({ setIsActive, isActi
                         <div className={styles.postHeaderInfoTime}>16:33</div>
                     </div>
                 </div>
-                <div className={styles.postContent}>
-                    <div className={styles.postTitle}>{post.title}</div>
-                    <div className={styles.postBody}>{post.body}</div>
-                </div>
+                {post.body ?
+                    <div className={styles.postContent}>
+                        <div className={styles.postTitle}>{post.title}</div>
+                        <div className={styles.postBody}>{post.body}</div>
+                    </div> : <p className={styles.loader}>Loading...</p>}
             </div>
         </div>
     );
